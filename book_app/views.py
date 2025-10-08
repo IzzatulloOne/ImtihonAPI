@@ -15,26 +15,33 @@ from .paginator import CustomPagination
 
 
 class BookListCreateView(generics.ListCreateAPIView):
-    queryset = Book.objects.all()
+    queryset = Book.objects.order_by('id')
     serializer_class = BookSerializer
     permission_classes = [IsAdminOrReadOnly]
-    pagination_class = CustomPagination
+    pagination_class = None
     filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
     filterset_fields = ['genre__name', 'author__last_name', 'publishment__name']
     search_fields = ['title', 'author__first_name', 'author__last_name', 'genre__name', 'publishment__name']
     ordering_fields = ['published_date', 'title']
 
-    def perform_create(self, serializer):
-        serializer.save()
+    def list(self, request, *args, **kwargs):
+        qs = self.filter_queryset(self.get_queryset())
+        # Выведем SQL — посмотри в консоли runserver
+        print("SQL:", qs.query)
+        # Также выведем количество
+        print("Count:", qs.count())
+        page = self.paginate_queryset(qs)
+        if page is not None:
+            serializer = self.get_serializer(page, many=True)
+            return self.get_paginated_response(serializer.data)
+        serializer = self.get_serializer(qs, many=True)
+        return Response(serializer.data)
 
 
 class BookDetailView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Book.objects.all()
     serializer_class = BookSerializer
     permission_classes = [IsAdminOrReadOnly]
-
-    def perform_update(self, serializer):
-        serializer.save()
 
 
 class AuthorListCreateView(generics.ListCreateAPIView):
