@@ -24,19 +24,6 @@ class BookListCreateView(generics.ListCreateAPIView):
     search_fields = ['title', 'author__first_name', 'author__last_name', 'genre__name', 'publishment__name']
     ordering_fields = ['published_date', 'title']
 
-    def list(self, request, *args, **kwargs):
-        qs = self.filter_queryset(self.get_queryset())
-        # Выведем SQL — посмотри в консоли runserver
-        print("SQL:", qs.query)
-        # Также выведем количество
-        print("Count:", qs.count())
-        page = self.paginate_queryset(qs)
-        if page is not None:
-            serializer = self.get_serializer(page, many=True)
-            return self.get_paginated_response(serializer.data)
-        serializer = self.get_serializer(qs, many=True)
-        return Response(serializer.data)
-
 
 class BookDetailView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Book.objects.all()
