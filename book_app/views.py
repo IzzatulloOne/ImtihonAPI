@@ -15,13 +15,13 @@ from .paginator import CustomPagination
 
 
 class BookListCreateView(generics.ListCreateAPIView):
-    queryset = Book.objects.order_by('id')
+    queryset = Book.objects.order_by('-id')
     serializer_class = BookSerializer
     permission_classes = [IsAdminOrReadOnly]
     pagination_class = None
     filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
-    filterset_fields = ['genre__name', 'author__last_name', 'publishment__name']
-    search_fields = ['title', 'author__first_name', 'author__last_name', 'genre__name', 'publishment__name']
+    filterset_fields = ['genre', 'author']
+    search_fields = ['title', 'publishment__name']
     ordering_fields = ['published_date', 'title']
 
 

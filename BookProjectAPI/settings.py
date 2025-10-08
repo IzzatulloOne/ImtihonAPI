@@ -133,15 +133,16 @@ REST_FRAMEWORK = {
         'anon': '100/day',
         'user': '100/day'
     },
+    'DEFAULT_FILTER_BACKENDS': (
+        'django_filters.rest_framework.DjangoFilterBackend',
+        'rest_framework.filters.SearchFilter',
+        'rest_framework.filters.OrderingFilter',
+    ),
     'DEFAULT_PAGINATION_CLASS': 'book_app.paginator.CustomPagination',
     'PAGE_SIZE': 10,
     'DEFAULT_RENDERER_CLASSES': (
         'rest_framework.renderers.JSONRenderer',
         'rest_framework.renderers.BrowsableAPIRenderer',
     ),
-    'DEFAULT_FILTER_BACKENDS': (
-        'django_filters.rest_framework.DjangoFilterBackend',
-        'rest_framework.filters.SearchFilter',
-        'rest_framework.filters.OrderingFilter',
-    )
+    
 }
